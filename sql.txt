@@ -1,0 +1,55 @@
+Задание 1 --------------------------------------------------------------------------------
+
+SELECT 
+    YEAR(action_date) AS Year,
+    '' AS Month,
+    '' AS Day,
+    SUM(qty * price) AS Sum
+FROM
+    Actions
+GROUP BY YEAR(action_date) 
+UNION ALL SELECT 
+    '' AS Year,
+    MONTHNAME(action_date) AS Month,
+    '' AS Day,
+    SUM(qty * price) AS Sum
+FROM
+    Actions
+GROUP BY MONTHNAME(action_date) 
+UNION ALL SELECT 
+    '' AS Year,
+    '' AS Month,
+    DAY(action_date) AS Day,
+    SUM(qty * price) AS Sum
+FROM
+    Actions
+GROUP BY DAY(action_date)
+ORDER BY Year, Month, Day;
+
+Задание 2 --------------------------------------------------------------------------------
+
+SELECT 
+    s.supplier AS Supplier,
+    YEAR(a.action_date) AS Year,
+    'ALL' AS Product,
+    SUM(a.qty * a.price) AS Sum
+FROM
+    Actions a
+        JOIN
+    Suppliers s ON a.supplier_id = s.id
+GROUP BY Supplier, Year 
+UNION ALL SELECT 
+    s.supplier AS Supplier,
+    YEAR(a.action_date) AS Year,
+    c.category AS Product,
+    SUM(a.qty * a.price) AS Sum
+FROM
+    Actions a
+        JOIN
+    Suppliers s ON a.supplier_id = s.id
+        JOIN
+    Products p ON a.product_id = p.id
+        JOIN
+    Categories c ON p.category_id = c.id
+GROUP BY Supplier, Year, c.category
+ORDER BY Supplier, Year, Product;
